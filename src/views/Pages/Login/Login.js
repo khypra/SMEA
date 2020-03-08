@@ -18,28 +18,31 @@ import api from "../../../services/api";
 import { login, isAuthenticated } from "../../../services/auth";
 import { withSnackbar } from "notistack";
 import CardMedia from "@material-ui/core/CardMedia";
-import GovLogo from "../Login/GovLogo.png";
+import Hmaislogo from "../Login/Hmaislogo.jpg";
 
 class Login extends Component {
   state = {
-    email: "",
+    login: "",
     password: "",
     redirect: false
   };
 
   handleSignIn = e => {
-    e.preventDefault();
-    // console.log(this.state);
-    api
-      .autenticate(this.state.email, this.state.password)
-      .then(result => {
-        // console.log(result);
-        login(result.data.token);
-        this.props.enqueueSnackbar("Seja bem vindo", { variant: "success" });
-        // console.log(this.props);
-        this.setState({ redirect: true });
-      })
-      .catch(e => console.error(e));
+    // e.preventDefault();
+    // // console.log(this.state);
+    // api
+    //   .autenticate(this.state.email, this.state.password)
+    //   .then(result => {
+    //     // console.log(result);
+    //     login(result.data.token);
+    //     this.props.enqueueSnackbar("Seja bem vindo", { variant: "success" });
+    //     // console.log(this.props);
+    //     this.setState({ redirect: true });
+    //   })
+    //   .catch(e => console.error(e));
+    login("token");
+    this.props.enqueueSnackbar("Seja bem vindo", { variant: "success" });
+    this.setState({ redirect: true });
   };
 
   renderRedirect() {
@@ -67,11 +70,11 @@ class Login extends Component {
                     }}
                   >
                     <img
-                      src={GovLogo}
+                      src={Hmaislogo}
                       alt=""
                       style={{
-                        width: 240,
-                        height: 260,
+                        width: 370,
+                        height: 195,
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center"
@@ -90,10 +93,10 @@ class Login extends Component {
                         </InputGroupAddon>
                         <Input
                           type="text"
-                          placeholder="Email"
-                          autoComplete="email"
+                          placeholder="Login"
+                          autoComplete="login"
                           onChange={e =>
-                            this.setState({ email: e.target.value })
+                            this.setState({ login: e.target.value })
                           }
                         />
                       </InputGroup>

@@ -51,7 +51,7 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-class Usuarios extends Component {
+class  extends Component {
   constructor() {
     super();
     this.state = {

@@ -1,19 +1,6 @@
 import React, {
   Component
-  // lazy, Suspense
 } from "react";
-// import { Bar, Line } from "react-chartjs-2";
-// import {
-//   Badge,
-//   Col,
-//   Dropdown,
-//   DropdownItem,
-//   DropdownMenu,
-//   DropdownToggle,
-//   Progress,
-//   Row,
-//   Table
-// } from "reactstrap";
 
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -21,7 +8,6 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-// import { makeStyles } from "@material-ui/core/styles";
 import { withStyles } from "@material-ui/core/styles";
 
 import api from "../../services/api";
@@ -77,6 +63,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    
     
   }
 
