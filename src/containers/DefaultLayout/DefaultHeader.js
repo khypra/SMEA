@@ -19,7 +19,7 @@ import {
   AppNavbarBrand,
   AppSidebarToggler
 } from "@coreui/react";
-import logo from "../../assets/img/brand/logo.svg";
+import logo from "../../assets/img/brand/logo.png";
 import sygnet from "../../assets/img/brand/sygnet.svg";
 import profileImage from "../../assets/img/profile-image.jpeg";
 

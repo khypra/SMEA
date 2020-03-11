@@ -30,6 +30,7 @@ const DefaultHeader = React.lazy(() => import("./DefaultHeader"));
 class DefaultLayout extends Component {
   state = {
     nav: {
+      //items of the default menu
       items: [
         {
           name: "Home",
@@ -37,9 +38,9 @@ class DefaultLayout extends Component {
           icon: "icon-home"
         },
         {
-          name: "Configurações",
-          url: "/configuracoes",
-          icon: "icon-options"
+          name: "Acompanhamentos",
+          url: "/acompanhamentos",
+          icon: "icon-people"
         }
       ]
     }

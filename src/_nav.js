@@ -6,6 +6,11 @@ export default {
       icon: "icon-home"
     },
     {
+      name: "Acompanhamentos",
+      url: "/acompanhamentos",
+      icon: "icon-people"
+    },
+    {
       title: true,
       name: "Components",
       wrapper: {
