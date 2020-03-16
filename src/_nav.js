@@ -11,6 +11,11 @@ export default {
       icon: "icon-people"
     },
     {
+      name: "Gráficos",
+      url: "/graficos",
+      icon: "icon-people"
+    },
+    {
       title: true,
       name: "Components",
       wrapper: {

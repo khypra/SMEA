@@ -41,6 +41,11 @@ class DefaultLayout extends Component {
           name: "Acompanhamentos",
           url: "/acompanhamentos",
           icon: "icon-people"
+        },
+        {
+          name: "Gráficos",
+          url: "/graficos",
+          icon: "icon-chart"
         }
       ]
     }

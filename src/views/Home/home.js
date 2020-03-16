@@ -4,7 +4,6 @@ import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import Icon from "@material-ui/core/Icon";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
@@ -26,7 +25,7 @@ const styles = theme => ({
     borderRadius: 10
   },
   media: {
-    height: 140
+    height: 0
   },
   actions: {
     display: "flex",
@@ -91,10 +90,6 @@ class Home extends Component {
                   }}
                 >
                   <CardContent>
-                    <CardMedia
-                      className={classes.media}
-                      src="../assets/img/Clipboard.png"
-                    ></CardMedia>
                     <Typography gutterBottom variant="h5" component="h2">
                       Acompanhamentos
                     </Typography>
@@ -114,14 +109,13 @@ class Home extends Component {
                 <CardActions
                   className={classes.actions}
                   onClick={() => {
-                    this.setState({ link: "/graficos", redirect: true });
+                    this.setState({
+                      link: "/graficos",
+                      redirect: true
+                    });
                   }}
                 >
                   <CardContent>
-                    <CardMedia
-                      className={classes.media}
-                      image="../../assets/img/Clipboard.png"
-                    ></CardMedia>
                     <Typography gutterBottom variant="h5" component="h2">
                       Gráficos
                     </Typography>
