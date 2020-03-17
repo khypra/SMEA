@@ -70,33 +70,30 @@ class Acompanhamentos extends Component {
   componentWillUnmount() {}
 
   //função que cria um usuário com os dados preenchidos na tabela, usando a API.
-  createUser({}) {}
+  createAcompanhamento({}) {}
 
   //função que edita um usuário com os dados modificados na tabela, usando a API.
-  updateUser({}) {}
+  updateAcompanhamento({}) {}
 
   //função que deleta um usuário escolhido na tabela, usando a API.
-  deleteUser({}) {}
+  deleteAcompanhamento({}) {}
 
   render() {
     return (
       <div>
         {this.renderRedirect()}
         <MaterialTable
-          title="Lista de Usuários"
+          title="Lista de Acompanhamentos"
           data={this.state.acompanhamentos}
           icons={tableIcons}
           columns={[
-            { title: "Código Prontuário", field: "cod_pront" },
-            { title: "Nome do Paciente", field: "name" },
-            { title: "Nome do Cirurgião", field: "name_medic" },
-            { title: "CPF", field: "cpf", type: "numeric" },
-            { title: "Telefone", field: "telefone" }
+            { title: "Cirurgião", field: "nome_cirurgiao" },
+            { title: "Anestesista", field: "nome_anestesista" }
           ]}
           actions={[
             {
               icon: () => <SupervisorAccountIcon color="inherit" />,
-              tooltip: "Visualizar Perfis de Usuário",
+              tooltip: "Vizualizar",
               onClick: (event, rowData) => {
                 console.log(rowData);
                 this.setState({

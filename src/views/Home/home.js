@@ -86,12 +86,12 @@ class Home extends Component {
                 <CardActions
                   className={classes.actions}
                   onClick={() => {
-                    this.setState({ link: "/acompanhamentos", redirect: true });
+                    this.setState({ link: "/pacientes", redirect: true });
                   }}
                 >
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                      Acompanhamentos
+                      Pacientes
                     </Typography>
                     <Typography
                       variant="body2"

@@ -38,8 +38,8 @@ class DefaultLayout extends Component {
           icon: "icon-home"
         },
         {
-          name: "Acompanhamentos",
-          url: "/acompanhamentos",
+          name: "Pacientes",
+          url: "/pacientes",
           icon: "icon-people"
         },
         {

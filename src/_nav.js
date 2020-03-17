@@ -6,8 +6,8 @@ export default {
       icon: "icon-home"
     },
     {
-      name: "Acompanhamentos",
-      url: "/acompanhamentos",
+      name: "Pacientes",
+      url: "/pacientes",
       icon: "icon-people"
     },
     {

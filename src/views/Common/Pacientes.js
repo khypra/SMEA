@@ -1,8 +1,8 @@
 import { Component } from "react";
 import React from "react";
+import { withSnackbar } from "notistack";
 import MaterialTable from "material-table";
 import { forwardRef } from "react";
-import { withSnackbar } from "notistack";
 
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 
@@ -21,8 +21,6 @@ import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
-
-import api from "../../services/api";
 
 import { Redirect } from "react-router-dom";
 
@@ -51,12 +49,11 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-class Acompanhamento extends Component {
+class Pacientes extends Component {
   constructor() {
     super();
     this.state = {
-      orgaos: [],
-      users: [],
+      acompanhamentos: [],
       link: "",
       redirect: false
     };
@@ -68,126 +65,38 @@ class Acompanhamento extends Component {
     }
   };
   //did mount que preenche a tabela com os dados do banco assim que a página carrega
-  componentDidMount() {
-    api
-      .getUsers()
-      .then(result => {
-        this.setState({ users: result.data.users });
-      })
-      .catch(err => {
-        console.error(err);
-        this.props.enqueueSnackbar(err.message, { variant: "error" });
-      });
-    api
-      .getOrgaos()
-      .then(result => {
-        var listOrg = {};
-
-        result.data.orgaos.forEach(org => {
-          listOrg[org.codigo] = org.sigla;
-        });
-        this.setState({
-          orgaos: listOrg
-        });
-      })
-      .catch(err => {
-        console.error(err);
-        this.props.enqueueSnackbar(err.message, { variant: "error" });
-      });
-  }
+  componentDidMount() {}
 
   componentWillUnmount() {}
 
   //função que cria um usuário com os dados preenchidos na tabela, usando a API.
-  createUser({ user }) {
-    return api
-      .getParam(1)
-      .then(result => {
-        if (result.data.param.name === "senha_padrao_autenticacao") {
-          return api.createUser({
-            user: { password: result.data.param.value, ...user }
-          });
-        } else {
-          this.props.enqueueSnackbar(
-            `Senha padrão não foi encontrada, verificar a grafia do parâmetro`,
-            { variant: "error" }
-          );
-        }
-      })
-      .then(result => {
-        this.setState({ users: [...this.state.users, result.data.user] });
-        this.props.enqueueSnackbar(
-          `${result.data.user.login} ${result.data.message}`,
-          { variant: "success" }
-        );
-      })
-      .catch(err => {
-        console.error(err);
-        this.props.enqueueSnackbar(err.message, { variant: "error" });
-      });
-  }
+  createPaciente({}) {}
 
   //função que edita um usuário com os dados modificados na tabela, usando a API.
-  updateUser({ user, update }) {
-    return api
-      .updateUserAdmin({ user: update })
-      .then(result => {
-        const data = this.state.users;
-        data[data.indexOf(user)] = update;
-        this.setState({ users: data });
-        this.props.enqueueSnackbar(
-          `${result.data.user.login} ${result.data.message}`,
-          { variant: "success" }
-        );
-      })
-      .catch(err => {
-        console.error(err);
-        this.props.enqueueSnackbar(err.message, { variant: "error" });
-      });
-  }
+  updatePaciente({}) {}
 
   //função que deleta um usuário escolhido na tabela, usando a API.
-  deleteUser({ user }) {
-    return api
-      .deleteUser({ user })
-      .then(result => {
-        const data = this.state.users;
-        data.splice(data.indexOf(user), 1);
-        this.setState({ users: data });
-        this.props.enqueueSnackbar(` ${result.data.message}`, {
-          variant: "success"
-        });
-      })
-      .catch(err => {
-        console.error(err);
-        this.props.enqueueSnackbar(err.message, { variant: "error" });
-      });
-  }
+  deletePaciente({}) {}
 
   render() {
     return (
       <div>
         {this.renderRedirect()}
         <MaterialTable
-          title="Lista de Usuários"
-          data={this.state.users}
+          title="Lista de Pacientes Cadastrados"
+          data={this.state.acompanhamentos}
           icons={tableIcons}
           columns={[
-            { title: "id", field: "id", editable: "never" },
-            { title: "Login", field: "login" },
-            { title: "Nome", field: "name" },
+            { title: "Código Prontuário", field: "cod_pront" },
+            { title: "Nome do Paciente", field: "name" },
             { title: "CPF", field: "cpf", type: "numeric" },
-            { title: "E-mail", field: "email" },
-            {
-              title: "Orgão",
-              field: "orgao_codigo",
-              lookup: { ...this.state.orgaos }
-            }
+            { title: "Sexo", field: "sexo" },
+            { title: "Telefone", field: "telefone" }
           ]}
           actions={[
             {
               icon: () => <SupervisorAccountIcon color="inherit" />,
-              tooltip: "Visualizar Perfis de Usuário",
+              tooltip: "Vizualizar",
               onClick: (event, rowData) => {
                 console.log(rowData);
                 this.setState({
@@ -263,4 +172,4 @@ class Acompanhamento extends Component {
   }
 }
 
-export default withSnackbar(Acompanhamento);
+export default withSnackbar(Pacientes);

@@ -39,7 +39,12 @@ class Login extends Component {
         // console.log(this.props);
         this.setState({ redirect: true });
       })
-      .catch(e => console.error(e));
+      .catch(err => {
+        console.error(err);
+        this.props.enqueueSnackbar("Usuario ou Senha incorretos.", {
+          variant: "error"
+        });
+      });
   };
 
   renderRedirect() {
