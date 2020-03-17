@@ -23,26 +23,23 @@ import Hmaislogo from "../Login/Hmaislogo.jpg";
 class Login extends Component {
   state = {
     login: "",
-    password: "",
+    senha: "",
     redirect: false
   };
 
   handleSignIn = e => {
-    // e.preventDefault();
-    // // console.log(this.state);
-    // api
-    //   .autenticate(this.state.email, this.state.password)
-    //   .then(result => {
-    //     // console.log(result);
-    //     login(result.data.token);
-    //     this.props.enqueueSnackbar("Seja bem vindo", { variant: "success" });
-    //     // console.log(this.props);
-    //     this.setState({ redirect: true });
-    //   })
-    //   .catch(e => console.error(e));
-    login("token");
-    this.props.enqueueSnackbar("Seja bem vindo", { variant: "success" });
-    this.setState({ redirect: true });
+    e.preventDefault();
+    // console.log(this.state);
+    api
+      .autenticate(this.state.login, this.state.senha)
+      .then(result => {
+        // console.log(result);
+        login(result.data.token);
+        this.props.enqueueSnackbar("Seja bem vindo", { variant: "success" });
+        // console.log(this.props);
+        this.setState({ redirect: true });
+      })
+      .catch(e => console.error(e));
   };
 
   renderRedirect() {
@@ -111,7 +108,7 @@ class Login extends Component {
                           placeholder="Senha"
                           autoComplete="current-password"
                           onChange={e =>
-                            this.setState({ password: e.target.value })
+                            this.setState({ senha: e.target.value })
                           }
                         />
                       </InputGroup>

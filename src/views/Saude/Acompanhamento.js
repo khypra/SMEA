@@ -51,7 +51,7 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-class  extends Component {
+class Acompanhamento extends Component {
   constructor() {
     super();
     this.state = {
@@ -263,4 +263,4 @@ class  extends Component {
   }
 }
 
-export default withSnackbar(Usuarios);
+export default withSnackbar(Acompanhamento);

@@ -2,8 +2,8 @@ import api_interna from "./api_interna";
 
 export default class api {
   // Autentica o usuário e retorna o token Bearer equivalente ao login
-  static autenticate(login, password) {
-    return api_interna.post("autenticate", { login, password });
+  static autenticate(nomeUsuario, senha) {
+    return api_interna.post("auth/login", { nomeUsuario, senha });
   }
 
   // Retorna os dados de um usuário e quais perfis ele possui nos demais sistemas
