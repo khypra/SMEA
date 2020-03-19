@@ -23,6 +23,7 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 
 import { Redirect } from "react-router-dom";
+import api from "../../services/api";
 
 //props da tabela do material table
 const tableIcons = {
@@ -49,58 +50,77 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-class Pacientes extends Component {
+class CirurgiasLimpas extends Component {
   constructor() {
     super();
     this.state = {
-      acompanhamentos: [],
+      pacienteAtual: {},
+      cirurgiasLimpas: [],
       link: "",
       redirect: false
     };
   }
 
+  //função de redirecionamento da página
   renderRedirect = () => {
     if (this.state.redirect) {
       return <Redirect to={this.state.link} />;
     }
   };
   //did mount que preenche a tabela com os dados do banco assim que a página carrega
-  componentDidMount() {}
+  componentDidMount() {
+    api
+      .getPaciente(this.props.match.params.id)
+      .then(result => {
+        this.setState({ pacienteAtual: result.data });
+      })
+      .catch(err => {
+        console.error(err);
+        this.props.enqueueSnackbar(err.message, { variant: "error" });
+      });
+  }
 
   componentWillUnmount() {}
 
-  //função que cria um usuário com os dados preenchidos na tabela, usando a API.
-  createPaciente({}) {}
+  //função que cria uma cirurgia com os dados preenchidos na tabela, usando a API.
+  createCirurgiaLimpa({ cirurgia }) {}
 
-  //função que edita um usuário com os dados modificados na tabela, usando a API.
-  updatePaciente({}) {}
+  //função que edita uma cirurgia com os dados modificados na tabela, usando a API.
+  updateCirurgiaLimpa({ cirurgia, update }) {}
 
-  //função que deleta um usuário escolhido na tabela, usando a API.
-  deletePaciente({}) {}
+  //função que deleta uma cirurgia escolhida na tabela, usando a API.
+  deleteCirurgiaLimpa({ cirurgia }) {}
 
   render() {
     return (
       <div>
         {this.renderRedirect()}
         <MaterialTable
-          title="Lista de Pacientes Cadastrados"
-          data={this.state.acompanhamentos}
+          title={`Lista de Cirurgias de ${this.state.pacienteAtual.nome}`}
+          data={this.state.cirurgiasLimpas}
           icons={tableIcons}
           columns={[
-            { title: "Código Prontuário", field: "cod_pront" },
-            { title: "Nome do Paciente", field: "name" },
-            { title: "CPF", field: "cpf", type: "numeric" },
-            { title: "Sexo", field: "sexo" },
-            { title: "Telefone", field: "telefone" }
+            { title: "Cirurgião", field: "nome_cirurgiao" },
+            { title: "Anestesista", field: "nome_anestesista" },
+            {
+              title: "Hora de início",
+              field: "dataHoraInicio",
+              type: "datetime"
+            },
+            {
+              title: "Hora de término",
+              field: "dataHoraFim",
+              type: "datetime"
+            }
           ]}
           actions={[
             {
               icon: () => <SupervisorAccountIcon color="inherit" />,
-              tooltip: "Vizualizar",
+              tooltip: "Acompanhamento",
               onClick: (event, rowData) => {
                 console.log(rowData);
                 this.setState({
-                  link: `/usuarios/${rowData.id}/perfis`,
+                  link: `/pacientes/${this.state.pacienteAtual.id}/cirurgias/${rowData.id}`,
                   redirect: true
                 });
               }
@@ -161,10 +181,12 @@ class Pacientes extends Component {
             pageSize: 5
           }}
           editable={{
-            onRowAdd: newData => this.createUser({ user: newData }),
+            onRowAdd: newData =>
+              this.createCirurgiaLimpa({ cirurgia: newData }),
             onRowUpdate: (newData, oldData) =>
-              this.updateUser({ user: oldData, update: newData }),
-            onRowDelete: oldData => this.deleteUser({ user: oldData })
+              this.updateCirurgiaLimpa({ cirurgia: oldData, update: newData }),
+            onRowDelete: oldData =>
+              this.deleteCirurgiaLimpa({ cirurgia: oldData })
           }}
         />
       </div>
@@ -172,4 +194,4 @@ class Pacientes extends Component {
   }
 }
 
-export default withSnackbar(Pacientes);
+export default withSnackbar(CirurgiasLimpas);

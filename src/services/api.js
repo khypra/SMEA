@@ -2,6 +2,7 @@ import api_interna from "./api_interna";
 
 export default class api {
   // Autentica o usuário e retorna o token Bearer equivalente ao login
+
   /** Autentication route
    * @param {nomeUsuario}
    * @param {senha}
@@ -10,32 +11,29 @@ export default class api {
     return api_interna.post("auth/login", { nomeUsuario, senha });
   }
 
-  /** Atualiza um paciente existente
-   * @param {paciente}
-   */
-  static updatePacient({ paciente }) {
-    return api_interna.put(`users/${paciente.cod_pront}`, {});
-  }
   //Rotas de Pacientes
+
+  // Retorna todos os pacientes
+  static getPacientes() {
+    return api_interna.get("/pacientes");
+  }
+  /** Retorna um paciente por id
+   * @param {id}
+   */
+  static getPaciente(id) {
+    return api_interna.get(`pacientes/${id}`);
+  }
 
   //Profissionais-Saude Routes
 
   //get all Profissionais-saude
   static getProfissionaisSaude() {
     return api_interna.get(`profissionais-saude`);
-  // Retorna todos os pacientes
-  static getPacientes() {
-    return api_interna.get("/pacientes");
   }
 
   //get one Profissional-saude
-  static getProfissionalSaude({ id }) {
+  static getProfissionalSaude(id) {
     return api_interna.get(`profissionais-saude/${id}`);
-  /** Retorna um paciente por id
-   * @param {id}
-   */
-  static getPaciente(id) {
-    return api_interna.get(`pacientes/${id}`);
   }
 
   //Acompanhamentos Routes
@@ -45,18 +43,14 @@ export default class api {
     return api_interna.get(`acompanhamentos`);
   }
 
-  //get one Profissional-saude
-  static getAcompanhamento({ id }) {
-    return api_interna.get(`profissionais-saude/${id}`);
+  //get one Acompanhamento
+  static getAcompanhamento(id) {
+    return api_interna.get(`acompanhamentos/${id}`);
   }
 
   /**Create Acompanhamento
    * @param {acompanhamento}
-  
-  //Rotas de Cirurgias Limpas
-
-  /** Armazena uma nova cirurgia
-   * @param {cirurgiaLimpa}
+   */
   static createAcompanhamento({ acompanhamento }) {
     return api_interna.post(`acompanhamentos`, {
       cirurgiaLimpaId: acompanhamento.cirurgiaLimpaId,
@@ -67,14 +61,10 @@ export default class api {
       eventoAdverso: acompanhamento.eventoAdverso,
       isc: acompanhamento.isc
     });
-  static createCirurgiaLimpa({ cirurgiaLimpa }) {
-    return api_interna.post("cirurgias-limpas", { cirurgiaLimpa });
   }
 
   /**Update Acompanhamento
    * @param {acompanhamento}
-  /** Atualiza uma cirurgia limpa existente
-   * @param {cirurgiaLimpa}
    */
   static updateAcompanhamento({ acompanhamento }) {
     return api_interna.put(`acompanhamentos/${acompanhamento.id}`, {
@@ -86,6 +76,31 @@ export default class api {
       eventoAdverso: acompanhamento.eventoAdverso,
       isc: acompanhamento.isc
     });
+  }
+
+  //Rotas de Cirurgias Limpas
+
+  /** Armazena uma nova cirurgia
+   * @param {cirurgiaLimpa}
+   */
+  static createCirurgiaLimpa({ cirurgiaLimpa }) {
+    return api_interna.post("cirurgias-limpas", {
+      pacienteId: cirurgiaLimpa.pacienteId,
+      medicoCirurgiaoId: cirurgiaLimpa.medicoCirurgiaoId,
+      medicoAnestesistaId: cirurgiaLimpa.medicoAnestesistaId,
+      dataHoraInicio: cirurgiaLimpa.dataHoraInicio,
+      dataHoraFim: cirurgiaLimpa.dataHoraFim,
+      descricao: cirurgiaLimpa.descricao,
+      novaCirurgia: cirurgiaLimpa.novaCirurgia,
+      temperaturaMinimaSala: cirurgiaLimpa.temperaturaMinimaSala,
+      temperaturaMaximaSala: cirurgiaLimpa.temperaturaMaximaSala,
+      cirurgiaLimpa: cirurgiaLimpa.cirurgiaLimpa
+    });
+  }
+
+  /** Atualiza uma cirurgia limpa existente
+   * @param {cirurgiaLimpa}
+   */
   static updateCirurgiaLimpa({ cirurgiaLimpa }) {
     return api_interna.put(`cirurgias-limpas/${cirurgiaLimpa.id}`, {
       pacienteId: cirurgiaLimpa.pacienteId,
@@ -98,6 +113,42 @@ export default class api {
       temperaturaMinimaSala: cirurgiaLimpa.temperaturaMinimaSala,
       temperaturaMaximaSala: cirurgiaLimpa.temperaturaMaximaSala,
       cirurgiaLimpa: cirurgiaLimpa.cirurgiaLimpa
+    });
+  }
+
+  //get all Cirurgias limpas
+  static getCirurgiasLimpas() {
+    return api_interna.get(`cirurgias-limpas`);
+  }
+
+  //get one Cirurgia limpa
+  static getCirurgiaLimpa(id) {
+    return api_interna.get(`cirurgias-limpas/${id}`);
+  }
+
+  //Registro Routes
+
+  //get all registros
+  static getRegistros() {
+    return api_interna.get(`registros`);
+  }
+
+  /**get one registro by id
+   * @param {id}
+   */
+  static getRegistro(id) {
+    return api_interna.get(`registros/${id}`);
+  }
+
+  /**create a new registro
+   * @param {registro}
+   */
+  static createRegistro({ registro }) {
+    return api_interna.post(`registros`, {
+      id: 0,
+      dataHora: "2020-03-19T15:14:29.675Z",
+      acompanhamentoId: 0,
+      formatoId: 0
     });
   }
 }
