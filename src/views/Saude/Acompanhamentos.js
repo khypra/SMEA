@@ -84,6 +84,7 @@ class Acompanhamentos extends Component {
     return (
       <div>
         {this.renderRedirect()}
+
         <MaterialTable
           title="Lista de Registros"
           data={this.state.registros}
