@@ -86,14 +86,14 @@ export default class api {
   static createCirurgiaLimpa({ cirurgiaLimpa }) {
     return api_interna.post("cirurgias-limpas", {
       pacienteId: cirurgiaLimpa.pacienteId,
-      medicoCirurgiaoId: cirurgiaLimpa.medicoCirurgiaoId,
-      medicoAnestesistaId: cirurgiaLimpa.medicoAnestesistaId,
+      medicoCirurgiaoId: parseInt(cirurgiaLimpa.medicoCirurgiaoId),
+      medicoAnestesistaId: parseInt(cirurgiaLimpa.medicoAnestesistaId),
       dataHoraInicio: cirurgiaLimpa.dataHoraInicio,
       dataHoraFim: cirurgiaLimpa.dataHoraFim,
       descricao: cirurgiaLimpa.descricao,
       novaCirurgia: cirurgiaLimpa.novaCirurgia,
-      temperaturaMinimaSala: cirurgiaLimpa.temperaturaMinimaSala,
-      temperaturaMaximaSala: cirurgiaLimpa.temperaturaMaximaSala,
+      temperaturaMinimaSala: parseInt(cirurgiaLimpa.temperaturaMinimaSala),
+      temperaturaMaximaSala: parseInt(cirurgiaLimpa.temperaturaMaximaSala),
       cirurgiaLimpa: cirurgiaLimpa.cirurgiaLimpa
     });
   }
@@ -104,14 +104,14 @@ export default class api {
   static updateCirurgiaLimpa({ cirurgiaLimpa }) {
     return api_interna.put(`cirurgias-limpas/${cirurgiaLimpa.id}`, {
       pacienteId: cirurgiaLimpa.pacienteId,
-      medicoCirurgiaoId: cirurgiaLimpa.medicoCirurgiaoId,
-      medicoAnestesistaId: cirurgiaLimpa.medicoAnestesistaId,
+      medicoCirurgiaoId: parseInt(cirurgiaLimpa.medicoCirurgiaoId),
+      medicoAnestesistaId: parseInt(cirurgiaLimpa.medicoAnestesistaId),
       dataHoraInicio: cirurgiaLimpa.dataHoraInicio,
       dataHoraFim: cirurgiaLimpa.dataHoraFim,
       descricao: cirurgiaLimpa.descricao,
       novaCirurgia: cirurgiaLimpa.novaCirurgia,
-      temperaturaMinimaSala: cirurgiaLimpa.temperaturaMinimaSala,
-      temperaturaMaximaSala: cirurgiaLimpa.temperaturaMaximaSala,
+      temperaturaMinimaSala: parseInt(cirurgiaLimpa.temperaturaMinimaSala),
+      temperaturaMaximaSala: parseInt(cirurgiaLimpa.temperaturaMaximaSala),
       cirurgiaLimpa: cirurgiaLimpa.cirurgiaLimpa
     });
   }
@@ -121,9 +121,19 @@ export default class api {
     return api_interna.get(`cirurgias-limpas`);
   }
 
-  //get one Cirurgia limpa
+  //get one Cirurgia limpa by Paciente id
+  static getCirurgiaLimpaPaciente(idPaciente) {
+    return api_interna.get(`cirurgias-limpas?pacienteId=${idPaciente}`);
+  }
+
+  //get one Cirurgia limpa by id
   static getCirurgiaLimpa(id) {
     return api_interna.get(`cirurgias-limpas/${id}`);
+  }
+
+  //delete one Cirurgia limpa by id
+  static deleteCirurgiaLimpa(id) {
+    return api_interna.delete(`cirurgias-limpas/${id}`);
   }
 
   //Registro Routes

@@ -54,8 +54,10 @@ class CirurgiasLimpas extends Component {
   constructor() {
     super();
     this.state = {
-      pacienteAtual: {},
-      cirurgiasLimpas: [],
+      pacienteAtual: {}, //state que armazena o paciente atual
+      cirurgiasLimpas: [], //array state que contem as cirurgias do paciente atual
+      medicosCirurgioes: [], //array state que contem todos os medicos cirurgioes
+      medicosAnestesistas: [], //array state que contem todos os medicos anestesistas
       link: "",
       redirect: false
     };
@@ -69,10 +71,66 @@ class CirurgiasLimpas extends Component {
   };
   //did mount que preenche a tabela com os dados do banco assim que a página carrega
   componentDidMount() {
+    //chamada para pegar os dados do paciente
     api
       .getPaciente(this.props.match.params.id)
       .then(result => {
         this.setState({ pacienteAtual: result.data });
+        //chamada da api para pegar as cirurgias que o paciente já fez
+        api
+          .getCirurgiaLimpaPaciente(this.state.pacienteAtual.id)
+          .then(result1 => {
+            result1.data.forEach(cirurgia => {
+              api.getCirurgiaLimpa(cirurgia.id).then(result2 => {
+                this.setState({
+                  cirurgiasLimpas: [...this.state.cirurgiasLimpas, result2.data]
+                });
+              });
+            });
+          })
+          .catch(err => {
+            if (err.message !== "Request failed with status code 404")
+              this.props.enqueueSnackbar(err.message, { variant: "error" });
+          });
+      })
+      .catch(err => {
+        console.error(err);
+        this.props.enqueueSnackbar(err.message, { variant: "error" });
+      });
+
+    //chamada da api para pegar os nomes de todos os medicos
+    api.getProfissionaisSaude().then(result => {
+      var listMed = {};
+      result.data.forEach(med => {
+        listMed[med.id] = med.nome;
+      });
+      this.setState({
+        medicosAnestesistas: listMed,
+        medicosCirurgioes: listMed
+      });
+    });
+  }
+
+  componentWillUnmount() {}
+
+  //função que cria uma cirurgia com os dados preenchidos na tabela, usando a API.
+  createCirurgiaLimpa({ cirurgia }) {
+    return api
+      .createCirurgiaLimpa({
+        cirurgiaLimpa: {
+          pacienteId: this.state.pacienteAtual.id,
+          medicoCirurgiaoId: cirurgia.medicoCirurgiao.id,
+          medicoAnestesistaId: cirurgia.medicoAnestesista.id,
+          ...cirurgia
+        }
+      })
+      .then(result => {
+        this.setState({
+          cirurgiasLimpas: [...this.state.cirurgiasLimpas, result.data]
+        });
+        this.props.enqueueSnackbar(`Cirurgia Registrada com Sucesso`, {
+          variant: "success"
+        });
       })
       .catch(err => {
         console.error(err);
@@ -80,16 +138,44 @@ class CirurgiasLimpas extends Component {
       });
   }
 
-  componentWillUnmount() {}
-
-  //função que cria uma cirurgia com os dados preenchidos na tabela, usando a API.
-  createCirurgiaLimpa({ cirurgia }) {}
-
   //função que edita uma cirurgia com os dados modificados na tabela, usando a API.
-  updateCirurgiaLimpa({ cirurgia, update }) {}
+  updateCirurgiaLimpa({ cirurgia, update }) {
+    return api
+      .updateCirurgiaLimpa({
+        cirurgiaLimpa: update
+      })
+      .then(result => {
+        const data = this.state.cirurgiasLimpas;
+        data[data.indexOf(cirurgia)] = update;
+        this.setState({ cirurgiasLimpas: data });
+        this.props.enqueueSnackbar(`Cirurgia Atualizada com Sucesso`, {
+          variant: "success"
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        this.props.enqueueSnackbar(err.message, { variant: "error" });
+      });
+  }
 
-  //função que deleta uma cirurgia escolhida na tabela, usando a API.
-  deleteCirurgiaLimpa({ cirurgia }) {}
+  // DEPRECIADO
+  // //função que deleta uma cirurgia escolhida na tabela, usando a API.
+  // deleteCirurgiaLimpa({ cirurgia }) {
+  //   api
+  //     .deleteCirurgiaLimpa(cirurgia.id)
+  //     .then(result => {
+  //       const data = this.state.cirurgiasLimpas;
+  //       data.splice(data.indexOf(cirurgia), 1);
+  //       this.setState({ systems: data });
+  //       this.props.enqueueSnackbar(` ${result.data.message}`, {
+  //         variant: "success"
+  //       });
+  //     })
+  //     .catch(err => {
+  //       console.error(err);
+  //       this.props.enqueueSnackbar(err.message, { variant: "error" });
+  //     });
+  // }
 
   render() {
     return (
@@ -100,17 +186,45 @@ class CirurgiasLimpas extends Component {
           data={this.state.cirurgiasLimpas}
           icons={tableIcons}
           columns={[
-            { title: "Cirurgião", field: "nome_cirurgiao" },
-            { title: "Anestesista", field: "nome_anestesista" },
             {
-              title: "Hora de início",
+              title: "Cirurgião",
+              field: "medicoCirurgiao.id",
+              lookup: { ...this.state.medicosCirurgioes }
+            },
+            {
+              title: "Anestesista",
+              field: "medicoAnestesista.id",
+              lookup: { ...this.state.medicosAnestesistas }
+            },
+            {
+              title: "Hora início",
               field: "dataHoraInicio",
               type: "datetime"
             },
             {
-              title: "Hora de término",
+              title: "Hora término",
               field: "dataHoraFim",
               type: "datetime"
+            },
+            {
+              title: "Temp. min. sala(°C)",
+              field: "temperaturaMinimaSala",
+              type: "numeric"
+            },
+            {
+              title: "Temp. máx. sala(°C)",
+              field: "temperaturaMaximaSala",
+              type: "numeric"
+            },
+            {
+              title: "Descrição",
+              field: "descricao"
+            },
+            { title: "Nova Cirurgia", field: "novaCirurgia", type: "boolean" },
+            {
+              title: "Cirurgia Limpa",
+              field: "cirurgiaLimpa",
+              type: "boolean"
             }
           ]}
           actions={[
@@ -120,7 +234,7 @@ class CirurgiasLimpas extends Component {
               onClick: (event, rowData) => {
                 console.log(rowData);
                 this.setState({
-                  link: `/pacientes/${this.state.pacienteAtual.id}/cirurgias/${rowData.id}`,
+                  link: `/pacientes/${this.state.pacienteAtual.id}/cirurgias/${rowData.id}/acompanhamento`,
                   redirect: true
                 });
               }
@@ -173,7 +287,7 @@ class CirurgiasLimpas extends Component {
             }
           }}
           options={{
-            actionsColumnIndex: 6,
+            actionsColumnIndex: 9,
             headerStyle: {
               backgroundColor: "#99def0",
               color: "black"
@@ -184,9 +298,8 @@ class CirurgiasLimpas extends Component {
             onRowAdd: newData =>
               this.createCirurgiaLimpa({ cirurgia: newData }),
             onRowUpdate: (newData, oldData) =>
-              this.updateCirurgiaLimpa({ cirurgia: oldData, update: newData }),
-            onRowDelete: oldData =>
-              this.deleteCirurgiaLimpa({ cirurgia: oldData })
+              this.updateCirurgiaLimpa({ cirurgia: oldData, update: newData })
+            //,onRowDelete: oldData => this.deleteCirurgiaLimpa({ user: oldData })
           }}
         />
       </div>
