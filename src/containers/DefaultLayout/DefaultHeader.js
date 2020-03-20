@@ -20,7 +20,7 @@ import {
   AppSidebarToggler
 } from "@coreui/react";
 import logo from "../../assets/img/brand/logo.png";
-import sygnet from "../../assets/img/brand/sygnet.svg";
+import sygnet from "../../assets/img/brand/sygnet.png";
 import profileImage from "../../assets/img/profile-image.jpeg";
 
 const propTypes = {
@@ -38,8 +38,8 @@ class DefaultHeader extends Component {
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile />
         <AppNavbarBrand
-          full={{ src: logo, width: 89, height: 25, alt: "CoreUI Logo" }}
-          minimized={{ src: sygnet, width: 30, height: 30, alt: "CoreUI Logo" }}
+          full={{ src: logo, width: 89, height: 25, alt: "HPLUS logo" }}
+          minimized={{ src: sygnet, width: 30, height: 30, alt: "UFS logo" }}
         />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
 

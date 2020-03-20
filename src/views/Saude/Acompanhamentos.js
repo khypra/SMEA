@@ -24,6 +24,7 @@ import ViewColumn from "@material-ui/icons/ViewColumn";
 
 import { Redirect } from "react-router-dom";
 import api from "../../services/api";
+import { Container } from "@material-ui/core";
 
 //props da tabela do material table
 const tableIcons = {
@@ -85,6 +86,7 @@ class Acompanhamentos extends Component {
       <div>
         {this.renderRedirect()}
 
+        <Container>hello</Container>
         <MaterialTable
           title="Lista de Registros"
           data={this.state.registros}

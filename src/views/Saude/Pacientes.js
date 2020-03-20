@@ -54,7 +54,7 @@ class Pacientes extends Component {
   constructor() {
     super();
     this.state = {
-      pacientes: [],
+      pacientes: [], //State list com todos os pacientes
       link: "",
       redirect: false
     };

@@ -38,14 +38,18 @@ export default class api {
 
   //Acompanhamentos Routes
 
-  //get all Profissionais-saude
+  //get all Acompanhamentos
   static getAcompanhamentos() {
     return api_interna.get(`acompanhamentos`);
   }
 
-  //get one Acompanhamento
+  //get one Acompanhamento by id
   static getAcompanhamento(id) {
     return api_interna.get(`acompanhamentos/${id}`);
+  }
+  //get one Acompanhamento by cirurgia id
+  static getAcompanhamentoCirurgia(idCirurgia) {
+    return api_interna.get(`acompanhamentos?cirurgiaLimpaId=${idCirurgia}`);
   }
 
   /**Create Acompanhamento
