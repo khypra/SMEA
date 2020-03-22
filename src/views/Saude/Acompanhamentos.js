@@ -60,12 +60,20 @@ const tableIcons = {
 };
 
 class Acompanhamentos extends Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       pacienteAtual: {}, //state que armazena o paciente atual
       cirurgiaAtual: {}, //state que armazena a cirurgia atual
-      acompanhamento: {}, //state que armazena os dados do acompanhamento atual
+      acompanhamento: {
+        cirurgiaLimpaId: props.match.params.idC,
+        responsavelPreenchimentoId: null,
+        permanenciaPaciente: false,
+        reinternacao: false,
+        usoProtese: false,
+        eventoAdverso: false,
+        isc: false
+      }, //state que armazena os dados do acompanhamento atual , inicializado para evitar bugs
       registros: [],
       link: "",
       redirect: false
@@ -297,7 +305,7 @@ class Acompanhamentos extends Component {
                     control={
                       <Switch
                         color="primary"
-                        checked={this.state.acompanhamento[key[1]]}
+                        checked={this.state.acompanhamento[key[0]]}
                         onChange={event => {
                           console.log(this.state.acompanhamento[key[0]]);
                           this.handleChange(event, key);
