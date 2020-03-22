@@ -67,7 +67,6 @@ class Acompanhamentos extends Component {
       cirurgiaAtual: {}, //state que armazena a cirurgia atual
       acompanhamento: {}, //state que armazena os dados do acompanhamento atual
       registros: [],
-      temAcompanhamento: false,
       link: "",
       redirect: false
     };
@@ -102,7 +101,10 @@ class Acompanhamentos extends Component {
     api
       .getAcompanhamentoCirurgia(this.props.match.params.idC)
       .then(result => {
-        this.setState({ acompanhamento: result.data, temAcompanhamento: true });
+        console.log(result.data[0]);
+        this.setState({
+          acompanhamento: result.data[0]
+        });
       })
       .catch(err => {
         if (err.message !== "Request failed with status code 404")
@@ -111,7 +113,7 @@ class Acompanhamentos extends Component {
           this.setState({
             acompanhamento: {
               cirurgiaLimpaId: this.props.match.params.idC,
-              responsavelPreenchimentoId: 0,
+              responsavelPreenchimentoId: null,
               permanenciaPaciente: false,
               reinternacao: false,
               usoProtese: false,
@@ -144,90 +146,170 @@ class Acompanhamentos extends Component {
   //função que edita um registro com os dados modificados na tabela, usando a API.
   updateRegistro({ registro, update }) {}
 
+  handleChange(event, key) {
+    const temp = this.state.acompanhamento;
+    temp[key[0]] = !this.state.acompanhamento[key[0]];
+    this.setState({
+      acompanhamento: temp
+    });
+    console.log("after temp", this.state.acompanhamento[key[0]]);
+    api
+      .updateAcompanhamento({ acompanhamento: this.state.acompanhamento })
+      .then(result => {
+        this.props.enqueueSnackbar(`${key[1]} foi alterado com sucesso`, {
+          variant: "success"
+        });
+      })
+      .catch(err => {
+        temp[key[0]] = !this.state.acompanhamento[key[0]];
+        this.setState({
+          acompanhamento: temp
+        });
+        this.props.enqueueSnackbar(err.message, { variant: "error" });
+
+        console.log("after temp", this.state.acompanhamento[key[0]]);
+      });
+  }
+
   acompanhamentoTela() {
     return (
-      <Grid container>
-        <Paper
+      <Grid item>
+        <div
           style={{
-            padding: 10,
-            margin: 10,
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
+            flexDirection: "row"
           }}
         >
-          <Typography
+          <Paper
             style={{
-              borderRadius: 5,
-              padding: 0,
-              paddingLeft: "10px"
+              padding: 6,
+              margin: 10,
+              display: "flex",
+              alignItems: "center"
             }}
-            variant="h6"
           >
-            Paciente : {this.state.pacienteAtual.nome}
-          </Typography>{" "}
-          <Typography
+            <Typography
+              style={{
+                borderRadius: 5,
+                padding: 0,
+                paddingLeft: 10,
+                paddingRight: 10
+              }}
+              variant="h6"
+            >
+              Paciente {<br />}
+              {this.state.pacienteAtual.nome}
+            </Typography>
+          </Paper>
+          <Paper
             style={{
-              borderRadius: 5,
-              padding: 0,
-              paddingLeft: "20px"
+              padding: 10,
+              margin: 10,
+              display: "flex",
+              alignItems: "center"
             }}
-            variant="h6"
           >
-            Descrição : {this.state.cirurgiaAtual.descricao}
-          </Typography>
-        </Paper>
+            <Typography
+              style={{
+                borderRadius: 5,
+                padding: 0,
+                paddingLeft: 10,
+                paddingRight: 10
+              }}
+              variant="h6"
+            >
+              Descrição {<br />}
+              {this.state.cirurgiaAtual.descricao}
+            </Typography>
+          </Paper>
+        </div>
       </Grid>
     );
   }
 
   render() {
+    const boolAcomp = {
+      permanenciaPaciente: "Permanência do Paciênte",
+      reinternacao: "Reiternação",
+      usoProtese: "Uso de Protese",
+      eventoAdverso: "Evento Adverso",
+      isc: "ISC"
+    };
+
     return (
       <div>
         {this.renderRedirect()}
-        <Grid container>
-          <div>{}</div>
-          <Card
+        <Card
+          style={{
+            backgroundColor: "#99def0",
+            padding: 8,
+            margin: 10,
+            marginLeft: 0,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+        >
+          {this.acompanhamentoTela()}
+          <div
             style={{
-              backgroundColor: "#99def0",
-              padding: 8,
-              margin: 10,
-              marginLeft: 0,
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center"
+              flexDirection: "row"
             }}
           >
-            {this.acompanhamentoTela()}
-            <Card>
-              {Object.keys(this.state.acompanhamento).map(prop => (
-                <div key={prop}>
+            {Object.entries(boolAcomp).map((key, item) => (
+              <div
+                key={key}
+                style={{
+                  display: "flex",
+                  flexDirection: "row"
+                }}
+              >
+                <Card
+                  style={{
+                    padding: 8,
+                    margin: 10,
+                    marginLeft: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                  }}
+                >
                   <Typography
                     style={{
                       borderRadius: 5,
                       padding: 0,
-                      paddingLeft: "10px"
+                      paddingLeft: 10,
+                      paddingRight: 10
                     }}
                     variant="h5"
                   >
-                    {prop}
+                    {key[1]}
                   </Typography>
                   <FormControlLabel
+                    style={{
+                      paddingLeft: 10,
+                      paddingRight: 10,
+                      marginLeft: 20
+                    }}
                     control={
                       <Switch
                         color="primary"
-                        checked={this.state.acompanhamento[prop]}
+                        checked={this.state.acompanhamento[key[1]]}
                         onChange={event => {
-                          return null;
+                          console.log(this.state.acompanhamento[key[0]]);
+                          this.handleChange(event, key);
                         }}
                       ></Switch>
                     }
                   />
-                </div>
-              ))}
-            </Card>
-          </Card>
-        </Grid>
+                </Card>
+              </div>
+            ))}
+          </div>
+        </Card>
 
         <MaterialTable
           title="Lista de Registros"

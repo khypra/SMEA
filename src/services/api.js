@@ -172,4 +172,15 @@ export default class api {
       formatoId: 0
     });
   }
+  /**update an already existing registro
+   * @param {registro}
+   */
+  static updateRegistro({ registro }) {
+    return api_interna.put(`registros/${registro.id}`, {
+      id: registro.id,
+      dataHora: registro.dataHora,
+      acompanhamentoId: registro.acompanhamentoId,
+      formatoId: registro.formatoId
+    });
+  }
 }
