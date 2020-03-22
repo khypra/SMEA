@@ -66,7 +66,7 @@ export default class api {
       responsavelPreenchimentoId: parseInt(
         acompanhamento.responsavelPreenchimentoId
       ),
-      permanenciaPacimente: acompanhamento.permanenciaPacimente,
+      permanenciaPaciente: acompanhamento.permanenciaPaciente,
       reinternacao: acompanhamento.reinternacao,
       usoProtese: acompanhamento.usoProtese,
       eventoAdverso: acompanhamento.eventoAdverso,
@@ -81,7 +81,7 @@ export default class api {
     return api_interna.put(`acompanhamentos/${acompanhamento.id}`, {
       cirurgiaLimpaId: acompanhamento.cirurgiaLimpaId,
       responsavelPreenchimentoId: acompanhamento.responsavelPreenchimentoId,
-      permanenciaPacimente: acompanhamento.permanenciaPacimente,
+      permanenciaPaciente: acompanhamento.permanenciaPaciente,
       reinternacao: acompanhamento.reinternacao,
       usoProtese: acompanhamento.usoProtese,
       eventoAdverso: acompanhamento.eventoAdverso,

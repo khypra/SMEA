@@ -6,13 +6,13 @@ import { forwardRef } from "react";
 
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 
-import { Grid, Typography, Paper } from "@material-ui/core";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Checkbox from "@material-ui/core/Checkbox";
+import {
+  Grid,
+  Typography,
+  Paper,
+  Switch,
+  FormControlLabel
+} from "@material-ui/core";
 
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
@@ -32,7 +32,7 @@ import ViewColumn from "@material-ui/icons/ViewColumn";
 
 import { Redirect } from "react-router-dom";
 import api from "../../services/api";
-import { Container, Card } from "@material-ui/core";
+import { Card } from "@material-ui/core";
 
 //props da tabela do material table
 const tableIcons = {
@@ -64,6 +64,7 @@ class Acompanhamentos extends Component {
     super();
     this.state = {
       pacienteAtual: {}, //state que armazena o paciente atual
+      cirurgiaAtual: {}, //state que armazena a cirurgia atual
       acompanhamento: {}, //state que armazena os dados do acompanhamento atual
       registros: [],
       temAcompanhamento: false,
@@ -88,7 +89,16 @@ class Acompanhamentos extends Component {
       .catch(err => {
         this.props.enqueueSnackbar(err.message, { variant: "error" });
       });
-
+    //chamada da api para pegar a cirurgia atual
+    api
+      .getCirurgiaLimpa(this.props.match.params.idC)
+      .then(result => {
+        this.setState({ cirurgiaAtual: result.data });
+      })
+      .catch(err => {
+        this.props.enqueueSnackbar(err.message, { variant: "error" });
+      });
+    //chamada para pegar os dados do acompanhamento
     api
       .getAcompanhamentoCirurgia(this.props.match.params.idC)
       .then(result => {
@@ -102,14 +112,13 @@ class Acompanhamentos extends Component {
             acompanhamento: {
               cirurgiaLimpaId: this.props.match.params.idC,
               responsavelPreenchimentoId: 0,
-              permanenciaPacimente: false,
+              permanenciaPaciente: false,
               reinternacao: false,
               usoProtese: false,
               eventoAdverso: false,
               isc: false
             }
           });
-          console.log(this.state.acompanhamento);
           api
             .createAcompanhamento({ acompanhamento: this.state.acompanhamento })
             .then(result => {
@@ -135,9 +144,6 @@ class Acompanhamentos extends Component {
   //função que edita um registro com os dados modificados na tabela, usando a API.
   updateRegistro({ registro, update }) {}
 
-  //função que deleta um registro escolhido na tabela, usando a API.
-  deleteRegistro({ registro }) {}
-
   acompanhamentoTela() {
     return (
       <Grid container>
@@ -158,7 +164,7 @@ class Acompanhamentos extends Component {
             }}
             variant="h6"
           >
-            Paciente {this.state.pacienteAtual.nome}
+            Paciente : {this.state.pacienteAtual.nome}
           </Typography>{" "}
           <Typography
             style={{
@@ -168,24 +174,11 @@ class Acompanhamentos extends Component {
             }}
             variant="h6"
           >
-            ID da Cirurgia {this.state.acompanhamento.cirurgiaLimpaId}
+            Descrição : {this.state.cirurgiaAtual.descricao}
           </Typography>
         </Paper>
       </Grid>
     );
-  }
-
-  renderPaper() {
-    const nameString = {
-      permanenciaPacimente: "Permanencia do Paciente",
-      reiternacao: "Reinternação",
-      usoProtese: "Uso de Protese",
-      eventoAdverso: "Evento Adverso",
-      isc: "ISC"
-    };
-    for (var prop in nameString) {
-      return <div>{this.state.acompanhamento[prop]}</div>;
-    }
   }
 
   render() {
@@ -193,6 +186,7 @@ class Acompanhamentos extends Component {
       <div>
         {this.renderRedirect()}
         <Grid container>
+          <div>{}</div>
           <Card
             style={{
               backgroundColor: "#99def0",
@@ -205,7 +199,33 @@ class Acompanhamentos extends Component {
             }}
           >
             {this.acompanhamentoTela()}
-            {this.renderPaper()}
+            <Card>
+              {Object.keys(this.state.acompanhamento).map(prop => (
+                <div key={prop}>
+                  <Typography
+                    style={{
+                      borderRadius: 5,
+                      padding: 0,
+                      paddingLeft: "10px"
+                    }}
+                    variant="h5"
+                  >
+                    {prop}
+                  </Typography>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={this.state.acompanhamento[prop]}
+                        onChange={event => {
+                          return null;
+                        }}
+                      ></Switch>
+                    }
+                  />
+                </div>
+              ))}
+            </Card>
           </Card>
         </Grid>
 
@@ -287,8 +307,7 @@ class Acompanhamentos extends Component {
           editable={{
             onRowAdd: newData => this.createRegistro({ registro: newData }),
             onRowUpdate: (newData, oldData) =>
-              this.updateRegistro({ registro: oldData, update: newData }),
-            onRowDelete: oldData => this.deleteRegistro({ registro: oldData })
+              this.updateRegistro({ registro: oldData, update: newData })
           }}
         />
       </div>
