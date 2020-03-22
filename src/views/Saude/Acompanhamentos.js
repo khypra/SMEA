@@ -6,6 +6,14 @@ import { forwardRef } from "react";
 
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 
+import { Grid, Typography, Paper } from "@material-ui/core";
+import FormLabel from "@material-ui/core/FormLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import Checkbox from "@material-ui/core/Checkbox";
+
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import Check from "@material-ui/icons/Check";
@@ -24,7 +32,7 @@ import ViewColumn from "@material-ui/icons/ViewColumn";
 
 import { Redirect } from "react-router-dom";
 import api from "../../services/api";
-import { Container } from "@material-ui/core";
+import { Container, Card } from "@material-ui/core";
 
 //props da tabela do material table
 const tableIcons = {
@@ -55,8 +63,10 @@ class Acompanhamentos extends Component {
   constructor() {
     super();
     this.state = {
-      acompanhamento: {},
+      pacienteAtual: {}, //state que armazena o paciente atual
+      acompanhamento: {}, //state que armazena os dados do acompanhamento atual
       registros: [],
+      temAcompanhamento: false,
       link: "",
       redirect: false
     };
@@ -68,7 +78,54 @@ class Acompanhamentos extends Component {
     }
   };
   //did mount que preenche a tabela com os dados do banco assim que a página carrega
-  componentDidMount() {}
+  componentDidMount() {
+    //chamada da api para pegar as cirurgias que o paciente já fez
+    api
+      .getPaciente(this.props.match.params.idP)
+      .then(result => {
+        this.setState({ pacienteAtual: result.data });
+      })
+      .catch(err => {
+        this.props.enqueueSnackbar(err.message, { variant: "error" });
+      });
+
+    api
+      .getAcompanhamentoCirurgia(this.props.match.params.idC)
+      .then(result => {
+        this.setState({ acompanhamento: result.data, temAcompanhamento: true });
+      })
+      .catch(err => {
+        if (err.message !== "Request failed with status code 404")
+          this.props.enqueueSnackbar(err.message, { variant: "error" });
+        else {
+          this.setState({
+            acompanhamento: {
+              cirurgiaLimpaId: this.props.match.params.idC,
+              responsavelPreenchimentoId: 0,
+              permanenciaPacimente: false,
+              reinternacao: false,
+              usoProtese: false,
+              eventoAdverso: false,
+              isc: false
+            }
+          });
+          console.log(this.state.acompanhamento);
+          api
+            .createAcompanhamento({ acompanhamento: this.state.acompanhamento })
+            .then(result => {
+              this.props.enqueueSnackbar(
+                `Não existia um acompanhamento anterior, logo um vazio foi criado`,
+                {
+                  variant: "success"
+                }
+              );
+            })
+            .catch(err => {
+              this.props.enqueueSnackbar(err.message, { variant: "error" });
+            });
+        }
+      });
+  }
 
   componentWillUnmount() {}
 
@@ -81,12 +138,77 @@ class Acompanhamentos extends Component {
   //função que deleta um registro escolhido na tabela, usando a API.
   deleteRegistro({ registro }) {}
 
+  acompanhamentoTela() {
+    return (
+      <Grid container>
+        <Paper
+          style={{
+            padding: 10,
+            margin: 10,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+        >
+          <Typography
+            style={{
+              borderRadius: 5,
+              padding: 0,
+              paddingLeft: "10px"
+            }}
+            variant="h6"
+          >
+            Paciente {this.state.pacienteAtual.nome}
+          </Typography>{" "}
+          <Typography
+            style={{
+              borderRadius: 5,
+              padding: 0,
+              paddingLeft: "20px"
+            }}
+            variant="h6"
+          >
+            ID da Cirurgia {this.state.acompanhamento.cirurgiaLimpaId}
+          </Typography>
+        </Paper>
+      </Grid>
+    );
+  }
+
+  renderPaper() {
+    const nameString = {
+      permanenciaPacimente: "Permanencia do Paciente",
+      reiternacao: "Reinternação",
+      usoProtese: "Uso de Protese",
+      eventoAdverso: "Evento Adverso",
+      isc: "ISC"
+    };
+    for (var prop in nameString) {
+      return <div>{this.state.acompanhamento[prop]}</div>;
+    }
+  }
+
   render() {
     return (
       <div>
         {this.renderRedirect()}
+        <Grid container>
+          <Card
+            style={{
+              backgroundColor: "#99def0",
+              padding: 8,
+              margin: 10,
+              marginLeft: 0,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}
+          >
+            {this.acompanhamentoTela()}
+            {this.renderPaper()}
+          </Card>
+        </Grid>
 
-        <Container>hello</Container>
         <MaterialTable
           title="Lista de Registros"
           data={this.state.registros}

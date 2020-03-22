@@ -7,10 +7,8 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
-import api from "../../services/api";
-import { getToken } from "../../services/auth";
 import { Redirect } from "react-router-dom";
-import { CardMedia, Grid } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Row } from "reactstrap";
 
 const styles = theme => ({

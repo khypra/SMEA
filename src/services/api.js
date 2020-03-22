@@ -31,9 +31,14 @@ export default class api {
     return api_interna.get(`profissionais-saude`);
   }
 
-  //get one Profissional-saude
+  //get one Profissional-saude by id
   static getProfissionalSaude(id) {
     return api_interna.get(`profissionais-saude/${id}`);
+  }
+
+  //get one Profissional-saude by type
+  static getProfissionalSaudeTipo(type) {
+    return api_interna.get(`profissionais-saude?tipo={type}`);
   }
 
   //Acompanhamentos Routes
@@ -57,8 +62,10 @@ export default class api {
    */
   static createAcompanhamento({ acompanhamento }) {
     return api_interna.post(`acompanhamentos`, {
-      cirurgiaLimpaId: acompanhamento.cirurgiaLimpaId,
-      responsavelPreenchimentoId: acompanhamento.responsavelPreenchimentoId,
+      cirurgiaLimpaId: parseInt(acompanhamento.cirurgiaLimpaId),
+      responsavelPreenchimentoId: parseInt(
+        acompanhamento.responsavelPreenchimentoId
+      ),
       permanenciaPacimente: acompanhamento.permanenciaPacimente,
       reinternacao: acompanhamento.reinternacao,
       usoProtese: acompanhamento.usoProtese,

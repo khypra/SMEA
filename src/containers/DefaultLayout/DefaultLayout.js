@@ -21,7 +21,6 @@ import {
 import routes from "../../routes";
 
 import { logout } from "../../services/auth";
-import api from "../../services/api";
 
 const DefaultAside = React.lazy(() => import("./DefaultAside"));
 const DefaultFooter = React.lazy(() => import("./DefaultFooter"));
