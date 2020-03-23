@@ -11,6 +11,12 @@ const Pacientes = React.lazy(() => import("./views/Saude/Pacientes"));
 
 const Charts = React.lazy(() => import("./views/Charts"));
 
+const Registros = React.lazy(() => import("./views/Saude/Registros"));
+
+const DetalhesRegistro = React.lazy(() =>
+  import("./views/Saude/DetalhesRegistro")
+);
+
 //Documentação sobre roteamento em react.js
 //https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -18,6 +24,7 @@ const routes = [
   { path: "/home", component: Home },
 
   { path: "/pacientes", exact: true, name: "Pacientes", component: Pacientes },
+  { path: "/graficos", name: "Charts", component: Charts },
   {
     path: "/pacientes/:idP/cirurgias/:idC/acompanhamento",
     exact: true,
@@ -30,7 +37,18 @@ const routes = [
     name: "Cirurgias",
     component: CirurgiasLimpas
   },
-  { path: "/graficos", name: "Charts", component: Charts }
+  {
+    path: "/pacientes/:idP/cirurgias/:idC/acompanhamento/:idA/registro/",
+    exact: true,
+    name: "Novo Registro",
+    component: Registros
+  },
+  {
+    path: "/pacientes/:idP/cirurgias/:idC/acompanhamento/detalhesregistro/:idR",
+    exact: true,
+    name: "Detalhes de Registro",
+    component: DetalhesRegistro
+  }
 ];
 
 export default routes;

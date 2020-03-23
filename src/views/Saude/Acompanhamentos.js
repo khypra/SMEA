@@ -368,7 +368,7 @@ class Acompanhamentos extends Component {
               isFreeAction: true,
               onClick: () => {
                 this.setState({
-                  link: `/pacientes/${this.state.pacienteAtual.id}/cirurgias/${this.state.cirurgiaAtual.id}/acompanhamento/registro/`,
+                  link: `/pacientes/${this.state.pacienteAtual.id}/cirurgias/${this.state.cirurgiaAtual.id}/acompanhamento/${this.state.acompanhamento.id}/registro/`,
                   redirect: true
                 });
               }
