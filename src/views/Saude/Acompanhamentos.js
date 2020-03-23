@@ -4,7 +4,8 @@ import { withSnackbar } from "notistack";
 import MaterialTable from "material-table";
 import { forwardRef } from "react";
 
-import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import AddBoxIcon from "@material-ui/icons/AddBox";
 
 import {
   Grid,
@@ -63,8 +64,8 @@ class Acompanhamentos extends Component {
   constructor(props) {
     super();
     this.state = {
-      pacienteAtual: {}, //state que armazena o paciente atual
-      cirurgiaAtual: {}, //state que armazena a cirurgia atual
+      pacienteAtual: {}, //object state que armazena o paciente atual
+      cirurgiaAtual: {}, //object state que armazena a cirurgia atual
       acompanhamento: {
         cirurgiaLimpaId: props.match.params.idC,
         responsavelPreenchimentoId: null,
@@ -73,8 +74,9 @@ class Acompanhamentos extends Component {
         usoProtese: false,
         eventoAdverso: false,
         isc: false
-      }, //state que armazena os dados do acompanhamento atual , inicializado para evitar bugs
-      registros: [],
+      }, // object state que armazena os dados do acompanhamento atual , inicializado para evitar bugs
+      registros: [], // array state que armazena os registros do acompanhamento atual
+      formatos: [], //array state que armazena os formatos de registro existentes
       link: "",
       redirect: false
     };
@@ -96,6 +98,7 @@ class Acompanhamentos extends Component {
       .catch(err => {
         this.props.enqueueSnackbar(err.message, { variant: "error" });
       });
+
     //chamada da api para pegar a cirurgia atual
     api
       .getCirurgiaLimpa(this.props.match.params.idC)
@@ -105,14 +108,38 @@ class Acompanhamentos extends Component {
       .catch(err => {
         this.props.enqueueSnackbar(err.message, { variant: "error" });
       });
+
+    //chamada da api para pegar os formatos existentes de registro
+    api.getFormatos().then(result => {
+      console.log(result.data);
+      this.setState({ formatos: result.data });
+    });
+
     //chamada para pegar os dados do acompanhamento
     api
       .getAcompanhamentoCirurgia(this.props.match.params.idC)
       .then(result => {
-        console.log(result.data[0]);
         this.setState({
-          acompanhamento: result.data[0]
+          acompanhamento: result.data[0] //está assim porque a api está retornando um vetor com um elemento
         });
+        console.log(result.data[0].id);
+
+        //pegar os registros já que já existia acompanhamento (pelo acompanhamentoId)
+        api
+          .getRegistrosAcompanhamento(result.data[0].id)
+          .then(result2 => {
+            console.log(result2.data);
+            this.setState({
+              registros: result2.data
+            });
+          })
+          .catch(err => {
+            if (err.message === "Request failed with status code 404")
+              this.props.enqueueSnackbar(
+                "Não existem registros neste acompanhamento",
+                { variant: "info" }
+              );
+          });
       })
       .catch(err => {
         if (err.message !== "Request failed with status code 404")
@@ -154,6 +181,7 @@ class Acompanhamentos extends Component {
   //função que edita um registro com os dados modificados na tabela, usando a API.
   updateRegistro({ registro, update }) {}
 
+  //função para alterar o estado da prop. booleana do objeto acompanhamento atravez do switch
   handleChange(event, key) {
     const temp = this.state.acompanhamento;
     temp[key[0]] = !this.state.acompanhamento[key[0]];
@@ -266,7 +294,7 @@ class Acompanhamentos extends Component {
               flexDirection: "row"
             }}
           >
-            {Object.entries(boolAcomp).map((key, item) => (
+            {Object.entries(boolAcomp).map(key => (
               <div
                 key={key}
                 style={{
@@ -318,23 +346,41 @@ class Acompanhamentos extends Component {
             ))}
           </div>
         </Card>
-
         <MaterialTable
           title="Lista de Registros"
           data={this.state.registros}
           icons={tableIcons}
           columns={[
-            { title: "Cirurgião", field: "nome_cirurgiao" },
-            { title: "Anestesista", field: "nome_anestesista" }
+            {
+              title: "Data e Hora",
+              type: "datetime",
+              field: "dataHora"
+            },
+            {
+              title: "Formato",
+              field: "formato.nome"
+            }
           ]}
           actions={[
             {
-              icon: () => <SupervisorAccountIcon color="inherit" />,
-              tooltip: "Vizualizar",
+              icon: AddBoxIcon,
+              tooltip: "Novo Registro",
+              isFreeAction: true,
+              onClick: () => {
+                this.setState({
+                  link: `/pacientes/${this.state.pacienteAtual.id}/cirurgias/${this.state.cirurgiaAtual.id}/acompanhamento/registro/`,
+                  redirect: true
+                });
+              }
+            },
+            {
+              icon: () => <MoreHorizIcon color="inherit" />,
+              tooltip: "Detalhar",
               onClick: (event, rowData) => {
                 console.log(rowData);
+
                 this.setState({
-                  link: `/usuarios/${rowData.id}/perfis`,
+                  link: `/pacientes/${this.state.pacienteAtual.id}/cirurgias/${this.state.cirurgiaAtual.id}/acompanhamento/detalhesregistro/${rowData.id}`,
                   redirect: true
                 });
               }
@@ -393,11 +439,6 @@ class Acompanhamentos extends Component {
               color: "black"
             },
             pageSize: 5
-          }}
-          editable={{
-            onRowAdd: newData => this.createRegistro({ registro: newData }),
-            onRowUpdate: (newData, oldData) =>
-              this.updateRegistro({ registro: oldData, update: newData })
           }}
         />
       </div>

@@ -99,8 +99,8 @@ class CirurgiasLimpas extends Component {
       });
 
     //chamada da api para pegar os nomes de todos os medicos
-    api.getProfissionaisSaude().then(result => {
-      var listMed = {};
+    api.getProfissionalSaudeTipo("medico").then(result => {
+      var listMed = [];
       result.data.forEach(med => {
         listMed[med.id] = med.nome;
       });

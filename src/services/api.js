@@ -21,7 +21,7 @@ export default class api {
    * @param {id}
    */
   static getPaciente(id) {
-    return api_interna.get(`pacientes/${id}`);
+    return api_interna.get(`pacientes/${parseInt(id)}`);
   }
 
   //Profissionais-Saude Routes
@@ -33,12 +33,12 @@ export default class api {
 
   //get one Profissional-saude by id
   static getProfissionalSaude(id) {
-    return api_interna.get(`profissionais-saude/${id}`);
+    return api_interna.get(`profissionais-saude/${parseInt(id)}`);
   }
 
   //get one Profissional-saude by type
   static getProfissionalSaudeTipo(type) {
-    return api_interna.get(`profissionais-saude?tipo={type}`);
+    return api_interna.get(`profissionais-saude?tipo=${type}`);
   }
 
   //Acompanhamentos Routes
@@ -54,7 +54,9 @@ export default class api {
   }
   //get one Acompanhamento by cirurgia id
   static getAcompanhamentoCirurgia(idCirurgia) {
-    return api_interna.get(`acompanhamentos?cirurgiaLimpaId=${idCirurgia}`);
+    return api_interna.get(
+      `acompanhamentos?cirurgiaLimpaId=${parseInt(idCirurgia)}`
+    );
   }
 
   /**Create Acompanhamento
@@ -78,9 +80,11 @@ export default class api {
    * @param {acompanhamento}
    */
   static updateAcompanhamento({ acompanhamento }) {
-    return api_interna.put(`acompanhamentos/${acompanhamento.id}`, {
-      cirurgiaLimpaId: acompanhamento.cirurgiaLimpaId,
-      responsavelPreenchimentoId: acompanhamento.responsavelPreenchimentoId,
+    return api_interna.put(`acompanhamentos/${parseInt(acompanhamento.id)}`, {
+      cirurgiaLimpaId: parseInt(acompanhamento.cirurgiaLimpaId),
+      responsavelPreenchimentoId: parseInt(
+        acompanhamento.responsavelPreenchimentoId
+      ),
       permanenciaPaciente: acompanhamento.permanenciaPaciente,
       reinternacao: acompanhamento.reinternacao,
       usoProtese: acompanhamento.usoProtese,
@@ -134,17 +138,19 @@ export default class api {
 
   //get one Cirurgia limpa by Paciente id
   static getCirurgiaLimpaPaciente(idPaciente) {
-    return api_interna.get(`cirurgias-limpas?pacienteId=${idPaciente}`);
+    return api_interna.get(
+      `cirurgias-limpas?pacienteId=${parseInt(idPaciente)}`
+    );
   }
 
   //get one Cirurgia limpa by id
   static getCirurgiaLimpa(id) {
-    return api_interna.get(`cirurgias-limpas/${id}`);
+    return api_interna.get(`cirurgias-limpas/${parseInt(id)}`);
   }
 
   //delete one Cirurgia limpa by id
   static deleteCirurgiaLimpa(id) {
-    return api_interna.delete(`cirurgias-limpas/${id}`);
+    return api_interna.delete(`cirurgias-limpas/${parseInt(id)}`);
   }
 
   //Registro Routes
@@ -154,11 +160,20 @@ export default class api {
     return api_interna.get(`registros`);
   }
 
+  /**get all registros by acompanhamentoID
+   *   @param {acompanhamentoId}
+   */
+  static getRegistrosAcompanhamento(acompanhamentoId) {
+    return api_interna.get(
+      `registros?acompanhamentoId=${parseInt(acompanhamentoId)}`
+    );
+  }
+
   /**get one registro by id
    * @param {id}
    */
   static getRegistro(id) {
-    return api_interna.get(`registros/${id}`);
+    return api_interna.get(`registros/${parseInt(id)}`);
   }
 
   /**create a new registro
@@ -176,11 +191,24 @@ export default class api {
    * @param {registro}
    */
   static updateRegistro({ registro }) {
-    return api_interna.put(`registros/${registro.id}`, {
+    return api_interna.put(`registros/${parseInt(registro.id)}`, {
       id: registro.id,
       dataHora: registro.dataHora,
       acompanhamentoId: registro.acompanhamentoId,
       formatoId: registro.formatoId
     });
+  }
+
+  //Formato Routes
+
+  //get all formatos
+  static getFormatos() {
+    return api_interna.get(`formatos`);
+  }
+  /**get one formato by id
+   * @param {id}
+   */
+  static getFormato(id) {
+    return api_interna.get(`formatos/${parseInt(id)}`);
   }
 }
