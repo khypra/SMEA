@@ -21,13 +21,13 @@ class DefaultFooter extends Component {
           Powered by <a href="https://coreui.io/react">CoreUI for React</a>
         </span>
         <span className="ml-auto">
-          Desenvolvido pela{" "}
+          Desenvolvido por alunos da{" "}
           <a
-            href="https://www.setc.se.gov.br/"
+            href="http://www.ufs.br/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Secretaria de Estado de Transparência e Controle
+            Universidade Federal de Sergipe
           </a>
         </span>
       </React.Fragment>

@@ -1,12 +1,12 @@
 {
-  "name": "central-de-sistemas-setc",
-  "version": "0.0.1",
+  "name": "Sistema Monitoramento Eventos Adversos",
+  "version": "0.0.5",
   "description": "",
-  "author": "Núcleo de Desenvolvimento da SETC",
+  "author": "https://github.com/khypra",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/desenvolvimento-setc/autenticacao-front/src/master/"
+    "url": "https://github.com/khypra/SMEA"
   },
   "dependencies": {
     "@coreui/coreui": "^2.1.16",
@@ -24,6 +24,7 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "flag-icon-css": "^3.4.5",
     "font-awesome": "^4.7.0",
+    "jwt-js-decode": "^1.4.1",
     "material-table": "^1.55.0",
     "mdbreact": "^4.25.0",
     "node-sass": "^4.13.1",
@@ -40,7 +41,8 @@
     "simple-line-icons": "^2.4.1"
   },
   "devDependencies": {
-    "react-scripts": "^3.3.0"
+    "react-scripts": "^3.4.0",
+    "webpack": "^4.42.0"
   },
   "scripts": {
     "start": "react-scripts start",

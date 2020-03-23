@@ -21,7 +21,6 @@ import {
 import routes from "../../routes";
 
 import { logout } from "../../services/auth";
-import api from "../../services/api";
 
 const DefaultAside = React.lazy(() => import("./DefaultAside"));
 const DefaultFooter = React.lazy(() => import("./DefaultFooter"));
@@ -30,6 +29,7 @@ const DefaultHeader = React.lazy(() => import("./DefaultHeader"));
 class DefaultLayout extends Component {
   state = {
     nav: {
+      //items of the default menu
       items: [
         {
           name: "Home",
@@ -37,9 +37,14 @@ class DefaultLayout extends Component {
           icon: "icon-home"
         },
         {
-          name: "Configurações",
-          url: "/configuracoes",
-          icon: "icon-options"
+          name: "Pacientes",
+          url: "/pacientes",
+          icon: "icon-people"
+        },
+        {
+          name: "Gráficos",
+          url: "/graficos",
+          icon: "icon-chart"
         }
       ]
     }
@@ -55,87 +60,7 @@ class DefaultLayout extends Component {
     this.props.history.push("/login");
   }
 
-  componentDidMount() {
-    // api.getMe().then(result => {
-    //   console.log(result);
-    //   const isAdm = result.data.user.roles.find(el => el.id === 1);
-    //   typeof isAdm !== "undefined" ? this.
-    // });
-    const navAdmin = {
-      items: [
-        {
-          name: "Home",
-          url: "/home",
-          icon: "icon-home"
-        },
-        {
-          title: true,
-          name: "Admin",
-          wrapper: {
-            // optional wrapper object
-            element: "", // required valid HTML5 element tag
-            attributes: {} // optional valid JS object with JS API naming ex: { className: "my-class", style: { fontFamily: "Verdana" }, id: "my-id"}
-          },
-          class: "" // optional class names space delimited list for title item ex: "text-center"
-        },
-        {
-          name: "Usuários",
-          url: "/usuarios",
-          icon: "icon-people",
-          attributes: {}
-        },
-        {
-          name: "Sistemas",
-          url: "/sistemas",
-          icon: "icon-screen-desktop"
-        },
-        {
-          name: "Órgãos",
-          url: "/orgaos",
-          icon: "icon-folder"
-        },
-        {
-          name: "Parâmetros",
-          url: "/parametros",
-          icon: "icon-wrench"
-        },
-        {
-          name: "Configurações",
-          url: "/configuracoes",
-          icon: "icon-options"
-        }
-      ]
-    };
-
-    api
-      .getMe()
-      .then(result => {
-        const admin = !(
-          result.data.user.roles.find(el => el.id === 1) === undefined
-        );
-        // console.log(admin);
-        this.setState({
-          nav: admin
-            ? navAdmin
-            : {
-                items: [
-                  {
-                    name: "Home",
-                    url: "/home",
-                    icon: "icon-home"
-                  },
-                  {
-                    name: "Configurações",
-                    url: "/configuracoes",
-                    icon: "icon-options"
-                  }
-                ]
-              }
-        });
-        // console.log(admin);
-      })
-      .catch(e => console.error(e));
-  }
+  componentDidMount() {}
 
   render() {
     // console.log(navigation);
